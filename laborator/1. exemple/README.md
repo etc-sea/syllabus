@@ -11,6 +11,7 @@ Alternativ se poate deschide un proiect existent și din meniul File.
 ![splash](https://user-images.githubusercontent.com/10776166/195396651-6a1d93da-6fe8-468c-8445-e3d68ce8b6e9.png)
 
 În fereastra de selecție se navighează în directorul `C:\STM32\STM32F746-Discovery\Examples\SmartThermostat și se deschide fișierul cu extensia `.ewp`
+
 ![open project](https://user-images.githubusercontent.com/10776166/195396863-2c505c99-f6aa-4736-afd8-6f65f694f127.png)
 
 Fișierele de proiect în Embedded Wizard au extensia `.ewp`, la fel puteți să deschideți și proiectele de la toate celelalte exemple
@@ -18,6 +19,7 @@ Fișierele de proiect în Embedded Wizard au extensia `.ewp`, la fel puteți să
 ## Embedded Wizard Studio
 
 După deschiderea proiectului ajungem la fereastra principală a Embedded Wizard.
+
 ![EmWi](https://user-images.githubusercontent.com/10776166/195398925-2b7ed635-7896-493a-a1f5-ad9e82a8ecc5.png)
 
 Aceasta conține un toolbar obișnuit în partea superioară, o galerie de componente în partea central-stânga, un inscpector în partea central-dreapta,
@@ -38,6 +40,7 @@ Pentru a porni prototyperul se va folosi iconița ![play](https://user-images.gi
 (_Start prototyper with application class_) sau se apasă pe combinația de taste Ctrl-F5.
 
 Prototyper-ul se va deschide într-o fereastră nouă de dimensiunea identică cu rezoluția ecranului configurat pentru placa de dezvoltare (480x272 în cazul nostru)
+
 ![prototyper](https://user-images.githubusercontent.com/10776166/195401433-eb98b9a3-e083-4477-946f-e5d1af005c89.png)
 
 Aceasta va rula toate animațiile definite și se poate interacționa cu mouse-ul pe post de touchscreen.
