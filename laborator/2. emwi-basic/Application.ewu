@@ -1,0 +1,138 @@
+﻿$version 11.00
+
+// This is the root component of the entire GUI application.
+$rect <20,20,220,60>
+$output false
+class Application : Core::Root
+{
+  $rect <500,0,700,40>
+  inherited property Bounds = <0,0,480,272>;
+
+  $rect <20,20,160,60>
+  object Views::Rectangle Rectangle
+  {
+    preset Bounds = <0,0,480,272>;
+    preset Color = #0F8D1CFF;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image Image
+  {
+    preset Bounds = <0,0,480,272>;
+    preset Bitmap = Application::Bitmap;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Line Line
+  {
+    preset Point2 = <454,249>;
+    preset Point1 = <71,249>;
+    preset Width = 10;
+    preset Color = #FF88AEFF;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text Text
+  {
+    preset Bounds = <19,14,265,70>;
+    preset WrapText = true;
+    preset String = "Laborator în aer liber";
+    preset Font = Application::Font;
+    preset Color = #AC3EFFFF;
+  }
+
+  $rect <20,20,160,60>
+  object Core::SimpleTouchHandler SimpleTouchHandler
+  {
+    preset Point4 = <19,14>;
+    preset Point3 = <265,14>;
+    preset Point2 = <265,70>;
+    preset Point1 = <19,70>;
+    preset OnPress = onTouch;
+  }
+
+  $rect <10,290,210,330>
+  slot onTouch
+  {
+    sender; /* the method is called from the sender object */
+
+    if (Line.Color == green)
+      Line.Color = pink;
+    else
+      Line.Color = green;
+  }
+
+  $rect <220,290,420,330>
+  var color green = #11FF4EFF;
+
+  $rect <220,330,420,370>
+  var color pink = #FF88AEFF;
+
+  $rect <10,380,210,420>
+  object Effects::ColorEffect ColorEffect
+  {
+    preset Symmetric = true;
+    preset CycleDuration = 2000;
+    preset Enabled = true;
+    preset Value2 = #48933BFF;
+    preset Value1 = #CD53E1FF;
+    preset Outlet = ^Text.Color;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image Image1
+  {
+    preset Bounds = <4,223,54,273>;
+    preset Bitmap = Resources::PlayerIconsLarge;
+  }
+
+  $rect <20,20,160,60>
+  object Core::SimpleTouchHandler SimpleTouchHandler1
+  {
+    preset Point4 = <-6,223>;
+    preset Point3 = <56,223>;
+    preset Point2 = <56,272>;
+    preset Point1 = <-6,272>;
+    preset OnPress = PointEffect.StartEffect;
+  }
+
+  $rect <220,380,420,420>
+  object Effects::PointEffect PointEffect
+  {
+    preset Symmetric = true;
+    preset NoOfCycles = 1;
+    preset CycleDuration = 2000;
+    preset Value2 = <454,249>;
+    preset Value1 = <71,249>;
+    preset Outlet = ^Line.Point1;
+  }
+}
+
+// This is a font resource.
+$rect <230,20,430,60>
+$output false
+resource Resources::Font Font
+{
+  attr fontname FontName = Droid Sans;
+  attr fontheight Height = 32;
+  attr fontquality Quality = High;
+  attr fontranges Ranges = 0x20-0xFF;
+  attr fontaspectratio AspectRatio = 1.0;
+  attr fontbold Bold = true;
+  attr fontitalic Italic = false;
+  attr fontkerning Kerning = true;
+  attr fontheightmode HeightMode = Compatible;
+  attr fontrowdistance RowDistance;
+}
+
+$rect <230,60,430,100>
+$output false
+resource Resources::Bitmap Bitmap
+{
+  attr bitmapfile FileName = .\Res\DSC06905.jpg;
+  attr bitmapformat Format = Native;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
+}
