@@ -1,0 +1,346 @@
+﻿$version 11.00
+
+// This is the root component of the entire GUI application.
+$rect <20,20,220,60>
+$output false
+class Application : Core::Root
+{
+  $rect <20,490,200,530>
+  inherited method Init()
+  {
+    Path.CreateFromSVGString( "M 6 3 A 1 1 0 0 0 6 5 A 1 1 0 0 0 6 3 M 6 5 L 6 7 L 5 9 M 6 7 L 7 9 M 5 7 C 4 6 5 6 6 6 C 7 6 8 6 7 5",
+     20.0, 20.0, 0.0, 0.0, 0.0 );
+  }
+
+  $rect <500,0,700,40>
+  inherited property Bounds = <0,0,480,272>;
+
+  $rect <20,20,160,60>
+  object Views::Rectangle Rectangle
+  {
+    preset Bounds = <0,0,480,272>;
+    preset Color = #0F8D1CFF;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image Image
+  {
+    preset Bounds = <0,0,480,272>;
+    preset Bitmap = Application::Bitmap;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Line Line
+  {
+    preset Point2 = <454,249>;
+    preset Point1 = <71,249>;
+    preset Width = 10;
+    preset Color = #FF88AEFF;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text Text
+  {
+    preset Bounds = <19,14,265,70>;
+    preset WrapText = true;
+    preset String = "Laborator în aer liber";
+    preset Font = Application::Font;
+    preset Color = #AC3EFFFF;
+  }
+
+  $rect <20,20,160,60>
+  object Core::SimpleTouchHandler SimpleTouchHandler
+  {
+    preset Point4 = <19,14>;
+    preset Point3 = <265,14>;
+    preset Point2 = <265,70>;
+    preset Point1 = <19,70>;
+    preset OnPress = onTouch;
+  }
+
+  $rect <10,290,210,330>
+  slot onTouch
+  {
+    sender; /* the method is called from the sender object */
+
+    if (Line.Color == green)
+      Line.Color = pink;
+    else
+      Line.Color = green;
+  }
+
+  $rect <220,290,420,330>
+  var color green = #11FF4EFF;
+
+  $rect <220,330,420,370>
+  var color pink = #FF88AEFF;
+
+  $rect <10,380,210,420>
+  object Effects::ColorEffect ColorEffect
+  {
+    preset Symmetric = true;
+    preset CycleDuration = 2000;
+    preset Enabled = true;
+    preset Value2 = #48933BFF;
+    preset Value1 = #CD53E1FF;
+    preset Outlet = ^Text.Color;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image Image1
+  {
+    preset Bounds = <4,223,54,273>;
+    preset Bitmap = Resources::PlayerIconsMedium;
+  }
+
+  $rect <20,20,160,60>
+  object Core::SimpleTouchHandler SimpleTouchHandler1
+  {
+    preset Point4 = <-6,223>;
+    preset Point3 = <56,223>;
+    preset Point2 = <56,272>;
+    preset Point1 = <-6,272>;
+    preset OnPress = PointEffect.StartEffect;
+  }
+
+  $rect <220,380,420,420>
+  object Effects::PointEffect PointEffect
+  {
+    preset Symmetric = true;
+    preset NoOfCycles = 1;
+    preset CycleDuration = 2000;
+    preset Value2 = <454,249>;
+    preset Value1 = <71,249>;
+    preset Outlet = ^Line.Point1;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image Image2
+  {
+    preset Bounds = <44,70,94,120>;
+    preset FrameNumber = 3;
+    preset Bitmap = Resources::PlayerIconsLarge;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Line Line1
+  {
+    preset Point2 = <69,182>;
+    preset Point1 = <69,118>;
+    preset Width = 6;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Line Line2
+  {
+    preset Point2 = <95,224>;
+    preset Point1 = <69,182>;
+    preset Width = 6;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Line Line3
+  {
+    preset Point2 = <40,224>;
+    preset Point1 = <69,182>;
+    preset Width = 6;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Line arm
+  {
+    preset Point2 = <110,136>;
+    preset Point1 = <69,151>;
+    preset Width = 6;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Line rightArm
+  {
+    preset Point2 = <69,151>;
+    preset Point1 = <21,144>;
+    preset Width = 6;
+  }
+
+  $rect <430,290,630,330>
+  object Effects::PointEffect PointEffect1
+  {
+    preset Symmetric = true;
+    preset CycleDuration = 800;
+    preset Enabled = true;
+    preset Value2 = <110,169>;
+    preset Value1 = <110,136>;
+    preset Outlet = ^armPoint;
+  }
+
+  $rect <430,330,630,370>
+  property point armPoint;
+
+  $rect <430,370,630,410>
+  onset armPoint
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure armPoint == value )
+      return;
+
+    // Remember the property's new value.
+    pure armPoint = value;
+
+    arm.Point2 = value;
+    rightArm.Point1.y = value.y;
+  }
+
+  $rect <430,410,630,450>
+  onget armPoint
+  {
+    return pure armPoint;
+  }
+
+  $rect <20,20,160,60>
+  object Views::StrokePath StrokePath
+  {
+    preset Bounds = <40,36,325,298>;
+    preset Width = 3;
+    preset Path = Path;
+  }
+
+  $rect <10,450,210,490>
+  object Graphics::Path Path;
+
+  $rect <20,20,160,60>
+  object Application::ProgressBar ProgressBar
+  {
+    preset Bounds = <207,97,454,136>;
+    preset Value = 100;
+  }
+}
+
+// This is a font resource.
+$rect <230,20,430,60>
+$output false
+resource Resources::Font Font
+{
+  attr fontname FontName = Droid Sans;
+  attr fontheight Height = 32;
+  attr fontquality Quality = High;
+  attr fontranges Ranges = 0x20-0xFF;
+  attr fontaspectratio AspectRatio = 1.0;
+  attr fontbold Bold = true;
+  attr fontitalic Italic = false;
+  attr fontkerning Kerning = true;
+  attr fontheightmode HeightMode = Compatible;
+  attr fontrowdistance RowDistance;
+}
+
+$rect <230,60,430,100>
+$output false
+resource Resources::Bitmap Bitmap
+{
+  attr bitmapfile FileName = .\Res\DSC06905.jpg;
+  attr bitmapformat Format = Native;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <20,110,220,150>
+$output false
+class ProgressBar : Core::Group
+{
+  $rect <330,0,530,40>
+  inherited property Bounds = <0,0,300,58>;
+
+  $rect <320,80,520,120>
+  inherited method UpdateLayout()
+  {
+    // Always invoke the inherited method.
+    super( aSize );
+
+    var rect bounds = Bounds.orect;
+
+    Background.Bounds = bounds;
+    Progress.Bounds.y2 = bounds.y2;
+    Border.Bounds = bounds;
+    Text.Bounds = bounds;
+    Text.Visible = bounds.h > Text.Font.Ascent;
+  }
+
+  $rect <320,40,520,80>
+  inherited method UpdateViewState()
+  {
+    // Always invoke the inherited method.
+    super( aState );
+
+    Progress.Bounds.w = Bounds.w * Value / 100;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Rectangle Background
+  {
+    preset Bounds = <88,9,188,45>;
+    preset ColorBL = #2C2C2CFF;
+    preset ColorBR = #2C2C2CFF;
+    preset ColorTR = #6B6B6BFF;
+    preset ColorTL = #6B6B6BFF;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Rectangle Progress
+  {
+    preset ColorBL = #FF2F00FF;
+    preset ColorBR = #FF2F00FF;
+    preset ColorTR = #6B1300FF;
+    preset ColorTL = #6B1300FF;
+  }
+
+  $rect <-20,100,180,140>
+  property int32 Value;
+
+  $rect <-20,140,180,180>
+  onset Value
+  {
+    if ( value < 0 )
+      value = 0;
+    if ( value > 100 )
+      value = 100;
+
+    // The value doesn't change - nothing to do.
+    if ( pure Value == value )
+      return;
+
+    // Remember the property's new value.
+    pure Value = value;
+
+    Text.String = string(value) + " %%";
+    InvalidateViewState();
+  }
+
+  $rect <20,20,160,60>
+  object Views::Border Border
+  {
+    preset Color = #00FF0BFF;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text Text
+  {
+    preset Font = Application::ProgressBarFont;
+  }
+}
+
+$rect <230,110,430,150>
+$output false
+resource Resources::Font ProgressBarFont
+{
+  attr fontname FontName = Droid Serif;
+  attr fontheight Height = 24;
+  attr fontheightmode HeightMode = Popular;
+  attr fontquality Quality = High;
+  attr fontranges Ranges = 0x20-0xFF;
+  attr fontaspectratio AspectRatio = 1.0;
+  attr fontbold Bold = false;
+  attr fontitalic Italic = false;
+  attr fontkerning Kerning = true;
+  attr fontrowdistance RowDistance;
+}
