@@ -1,0 +1,620 @@
+﻿$version 11.00
+
+// This is the root component of the entire GUI application.
+$rect <20,20,220,60>
+$output false
+class Application : Core::Root
+{
+  $rect <500,0,700,40>
+  inherited property Bounds = <0,0,480,272>;
+
+  $rect <20,20,160,60>
+  object Views::Rectangle Rectangle
+  {
+    preset Bounds = <0,0,480,272>;
+    preset Color = #FFB4B8FF;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image Image
+  {
+    preset Bounds = <0,0,480,272>;
+    preset Bitmap = Application::Bitmap;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text Text
+  {
+    preset Bounds = <157,14,480,44>;
+    preset String = "Hai la deal";
+    preset Font = Application::Font;
+    preset Color = #CDFFFCFF;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Line Line
+  {
+    preset Point2 = <386,44>;
+    preset Point1 = <255,44>;
+    preset Color = #B4EBFFFF;
+  }
+
+  $rect <20,20,160,60>
+  object Core::SimpleTouchHandler SimpleTouchHandler
+  {
+    preset Point4 = <240,14>;
+    preset Point3 = <386,14>;
+    preset Point2 = <386,44>;
+    preset Point1 = <240,44>;
+    preset OnPress = onTextPress;
+  }
+
+  $rect <500,70,700,110>
+  slot onTextPress
+  {
+    sender; /* the method is called from the sender object */
+
+    if (Text.Color == colorBlue)
+    {
+      Text.Color = colorRed;
+      Line.Color = colorRed;
+    }
+    else
+    {
+      Text.Color = colorBlue;
+      Line.Color = colorBlue;
+    }
+
+  }
+
+  $rect <500,130,700,170>
+  var color colorBlue = #BDE3FFFF;
+
+  $rect <500,170,700,210>
+  var color colorRed = #FF6376FF;
+
+  $rect <20,20,160,60>
+  object Views::Image ButtonPlay
+  {
+    preset Bounds = <24,14,74,64>;
+    preset Bitmap = Resources::PlayerIconsMedium;
+  }
+
+  $rect <0,300,200,340>
+  object Effects::ColorEffect ColorEffect
+  {
+    preset Symmetric = true;
+    preset CycleDuration = 2000;
+    preset Enabled = true;
+    preset Value2 = #FF502DFF;
+    preset Value1 = #B7FFA6FF;
+    preset Outlet = ^ButtonPlay.Color;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Line Line1
+  {
+    preset Point2 = <24,242>;
+    preset Point1 = <24,242>;
+    preset Width = 10;
+    preset Color = #1FFF27FF;
+  }
+
+  $rect <210,300,410,340>
+  object Effects::PointEffect PointEffect
+  {
+    preset Symmetric = true;
+    preset NoOfCycles = 1;
+    preset CycleDuration = 3000;
+    preset Value2 = <386,242>;
+    preset Value1 = <24,242>;
+    preset Outlet = ^PointLength;
+  }
+
+  $rect <20,20,160,60>
+  object Core::SimpleTouchHandler SimpleTouchHandler1
+  {
+    preset Point4 = <24,14>;
+    preset Point3 = <74,14>;
+    preset Point2 = <74,64>;
+    preset Point1 = <24,64>;
+    preset OnPress = PointEffect.StartEffect;
+  }
+
+  $rect <210,350,410,390>
+  property point PointLength;
+
+  $rect <210,390,410,430>
+  onset PointLength
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure PointLength == value )
+      return;
+
+    // Remember the property's new value.
+    pure PointLength = value;
+
+    Line1.Point2 = value;
+    arrow.Point1 = value;
+    arrow.Point2.x = arrow.Point1.x + 12;
+  }
+
+  $rect <210,430,410,470>
+  onget PointLength
+  {
+    return pure PointLength;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Line arrow
+  {
+    preset Point2 = <36,242>;
+    preset Point1 = <24,242>;
+    preset Width1 = 20;
+    preset Color = #1FFF27FF;
+  }
+
+  $rect <20,20,160,60>
+  object Application::ProgressBar ProgressBar
+  {
+    preset Bounds = <182,242,455,257>;
+    preset Progress = 70;
+  }
+
+  $rect <20,20,160,60>
+  object Application::ThermoWindow ThermoWindow
+  {
+    preset Bounds = <480,0,960,272>;
+  }
+
+  $rect <20,20,160,60>
+  object Core::SimpleTouchHandler SimpleTouchHandler2
+  {
+    preset Point4 = <0,213>;
+    preset Point3 = <60,213>;
+    preset Point2 = <60,272>;
+    preset Point1 = <0,272>;
+    preset OnPress = SwitchWindow;
+  }
+
+  $rect <0,390,200,430>
+  slot SwitchWindow
+  {
+    sender; /* the method is called from the sender object */
+
+    if ( activeWindow != ThermoWindow )
+    {
+      windowSlide.Value1 = Bounds.orect + point(Bounds.w, 0);
+      windowSlide.Value2 = Bounds.orect;
+      windowSlide.Outlet = ^ThermoWindow.Bounds;
+      signal windowSlide.StartEffect;
+      ThermoWindow.Visible = true;
+      activeWindow = ThermoWindow;
+    }
+    else
+    {
+      windowSlide.Value2 = Bounds.orect + point(Bounds.w, 0);
+      windowSlide.Value1 = Bounds.orect;
+      windowSlide.Outlet = ^ThermoWindow.Bounds;
+      signal windowSlide.StartEffect;
+      activeWindow = null;
+    }
+  }
+
+  $rect <0,430,200,470>
+  var object activeWindow = null;
+
+  $rect <0,470,200,510>
+  object Effects::RectEffect windowSlide
+  {
+    preset NoOfCycles = 1;
+  }
+}
+
+// This is a font resource.
+$rect <230,20,430,60>
+$output false
+resource Resources::Font Font
+{
+  attr fontname FontName = Comic Sans MS;
+  attr fontheight Height = 32;
+  attr fontquality Quality = High;
+  attr fontranges Ranges = 0x20-0xFF;
+  attr fontaspectratio AspectRatio = 1.0;
+  attr fontbold Bold = false;
+  attr fontitalic Italic = false;
+  attr fontkerning Kerning = true;
+  attr fontheightmode HeightMode = Compatible;
+  attr fontrowdistance RowDistance;
+}
+
+$rect <230,60,430,100>
+$output false
+resource Resources::Bitmap Bitmap
+{
+  attr bitmapfile FileName = .\Res\IMG_20191018_105229.jpg;
+  attr bitmapformat Format = Native;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <20,120,220,160>
+$output false
+class ProgressBar : Core::Group
+{
+  $rect <10,160,190,200>
+  inherited method Init()
+  {
+    $if $composer
+    Progress = 50;
+    $endif
+  }
+
+  $rect <320,0,520,40>
+  inherited property Bounds = <0,0,300,50>;
+
+  $rect <0,110,200,150>
+  inherited method UpdateLayout()
+  {
+    // Always invoke the inherited method.
+    super( aSize );
+
+    var rect bounds = Bounds.orect;
+
+    Background.Bounds = bounds;
+    Foreground.Bounds.y2 = bounds.y2;
+    Border.Bounds = bounds;
+    Text.Bounds = bounds;
+    Text.Visible = bounds.h > Text.Font.Ascent;
+  }
+
+  $rect <0,70,200,110>
+  inherited method UpdateViewState()
+  {
+    // Always invoke the inherited method.
+    super( aState );
+
+    Foreground.Bounds.w = Bounds.w * Progress / 100;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Rectangle Background
+  {
+    preset ColorBL = #3A3A3AFF;
+    preset ColorBR = #3A3A3AFF;
+    preset ColorTR = #4D4D4DFF;
+    preset ColorTL = #4D4D4DFF;
+    preset Color = #3A3A3AFF;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Rectangle Foreground
+  {
+    preset ColorBL = #00FF38FF;
+    preset ColorBR = #00FF38FF;
+    preset ColorTR = #007B1BFF;
+    preset ColorTL = #007B1BFF;
+    preset Color = #00FF38FF;
+  }
+
+  $rect <220,70,420,110>
+  property int32 Progress;
+
+  $rect <220,110,420,150>
+  onset Progress
+  {
+    if ( value < 0 )
+      value = 0;
+    if ( value > 100 )
+      value = 100;
+
+    // The value doesn't change - nothing to do.
+    if ( pure Progress == value )
+      return;
+
+    // Remember the property's new value.
+    pure Progress = value;
+
+    Text.String = string(Progress) + " %%";
+    InvalidateViewState();
+
+  }
+
+  $rect <20,20,160,60>
+  object Views::Border Border
+  {
+    preset Color = #FFC900FF;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text Text
+  {
+    preset Font = Application::ProgressBarFont;
+  }
+}
+
+$rect <233,120,433,160>
+$output false
+resource Resources::Font ProgressBarFont
+{
+  attr fontname FontName = Noto Sans;
+  attr fontheight Height = 24;
+  attr fontheightmode HeightMode = Popular;
+  attr fontquality Quality = High;
+  attr fontranges Ranges = 0x20-0xFF;
+  attr fontaspectratio AspectRatio = 1.0;
+  attr fontbold Bold = true;
+  attr fontitalic Italic = false;
+  attr fontkerning Kerning = true;
+  attr fontrowdistance RowDistance;
+}
+
+$rect <20,200,220,240>
+$output false
+resource Resources::Bitmap Thermo
+{
+  attr bitmapfile FileName = .\Res\thermo.png;
+  attr bitmapformat Format = Native;
+  attr framesize FrameSize = <96,272>;
+  attr framedelay FrameDelay;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <20,240,220,280>
+$output false
+class Thermometer : Core::Group
+{
+  $rect <120,0,320,40>
+  inherited property Bounds = <0,0,96,272>;
+
+  $rect <120,130,320,170>
+  inherited method UpdateLayout()
+  {
+    // Always invoke the inherited method.
+    super( aSize );
+
+    Back.Bounds = Bounds.orect;
+    Front.Bounds.point2 = Bounds.size;
+    Front.Bounds.x1 = 0;
+  }
+
+  $rect <120,90,320,130>
+  inherited method UpdateViewState()
+  {
+    // Always invoke the inherited method.
+    super( aState );
+
+    Front.Bounds.y1 = 233 * (50 - Temperature) / 100 + 20;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image Back
+  {
+    preset Bounds = <32,104,82,154>;
+    preset AutoSize = true;
+    preset Bitmap = Application::Thermo;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image Front
+  {
+    preset Layout = Core::Layout[AlignToBottom, AlignToLeft];
+    preset Bounds = <5,124,55,174>;
+    preset AutoSize = false;
+    preset Alignment = Views::ImageAlignment[AlignHorzCenter, AlignVertBottom];
+    preset FrameNumber = 1;
+    preset Bitmap = Application::Thermo;
+  }
+
+  $rect <120,200,320,240>
+  property int32 Temperature = 0;
+
+  $rect <120,240,320,280>
+  onset Temperature
+  {
+    if (value < -50)
+      value = -50;
+    if (value > 50 )
+      value = 50;
+
+    // The value doesn't change - nothing to do.
+    if ( pure Temperature == value )
+      return;
+
+    // Remember the property's new value.
+    pure Temperature = value;
+
+    InvalidateViewState();
+
+  }
+}
+
+$rect <236,201,436,241>
+$output false
+class ThermoWindow : Core::Group
+{
+  $rect <10,300,210,340>
+  inherited property Bounds = <0,0,480,272>;
+
+  $rect <10,390,210,430>
+  inherited method UpdateLayout()
+  {
+    // Always invoke the inherited method.
+    super( aSize );
+
+    Background.Bounds = Bounds.orect;
+  }
+
+  $rect <10,350,210,390>
+  inherited method UpdateViewState()
+  {
+    // Always invoke the inherited method.
+    super( aState );
+
+    /*
+
+      HINT 1:
+
+      This method is invoked automatically when the state set of the component has
+      been changed. The new state set can be found in the parameter aState.
+      Following are the important states:
+
+        Enabled   --> The component can react to user inputs.
+
+        Selected  --> The component is selected in context of its owner.
+
+        Focused   --> The component is selected in context of its owner and 
+                      the owner can react to keyboard events. In this manner the
+                      component is also able to react to keyboard events.
+
+        Modal     --> The component is modal. All events are redirected to this
+                      component.
+
+      To determine whether a state is currently active or not you have to test
+      the aState parameter. For example to test the 'Selected' state:
+
+        if ( aState.contains( Core::ViewState[ Selected ]))
+        {
+          ... yes, this component is currently selected.
+        }
+
+    */
+
+    /*
+
+      HINT 2:
+
+      Alternatively you can request this method invocation by executing explicitly
+      following code:
+
+
+        InvalidateViewState();
+
+    */
+      
+    /*
+
+      TO DO 1:
+
+      Put here the code to ensure that the visual aspect of the component does
+      reflect its current state. For example, depending on its 'Enabled' state
+      a component may appear with full colors or pale if it is disabled:
+
+        if ( aState.contains( Core::ViewState[ Enabled ]))
+        {
+          SomeBackgroundView.Opacity = 255;
+          SomeTextView.Color         = #000000FF;
+        }
+        else
+        {
+          SomeBackgroundView.Opacity = 128;
+          SomeTextView.Color         = #00000080;
+        }
+
+
+      TO DO 2:
+
+      You can evaluate here also the state of any other member in your component.
+      For example in a push-button component, the button should appear highlighted
+      as long as the user holds the finger within a touch area of the button:
+
+        if ( SomeTouchHandler.Down && SomeTouchHandler.Inside )
+          HighlightedBackground.Visible = true;
+        else
+          HighlightedBackground.Visible = false;
+
+      The touch handler itself only requests the update method to be called. Use
+      for this purpose 'InvalidateViewState()' method.
+
+
+      TO DO 3:
+
+      You can calculate here also the position/size of views accordingly to the
+      state of any other member in your component. For example in a slider you
+      can calculate the position of the slider knob from some properties like
+      'SliderValue' and 'SliderRange':
+
+        SliderKnob.Bounds.origin.x = ( SliderValue * Bounds.w ) / SliderRange;
+
+      Changing the 'SliderValue' or 'SliderRange' property should only request
+      the update method to be called. Use for this purpose 'InvalidateViewState()'
+      method.
+
+    */
+  }
+
+  $rect <20,20,160,60>
+  object Views::Rectangle Background
+  {
+    preset Bounds = <102,104,202,204>;
+    preset Color = #5C7086FF;
+  }
+
+  $rect <20,20,160,60>
+  object Application::Thermometer Thermometer
+  {
+    preset Bounds = <384,0,480,272>;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text Text
+  {
+    preset Bounds = <21,30,331,60>;
+    preset String = "Current temperature is:";
+    preset Font = Application::Font;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text Text1
+  {
+    preset Bounds = <108,103,255,163>;
+    preset Font = Application::TempFont;
+  }
+
+  $rect <230,350,430,390>
+  property int32 Temperature = 0;
+
+  $rect <230,390,430,430>
+  onset Temperature
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure Temperature == value )
+      return;
+
+    // Remember the property's new value.
+    pure Temperature = value;
+
+    Text1.String = string(value) + " °C";
+    Thermometer.Temperature = value;
+  }
+
+  $rect <440,350,640,390>
+  object Effects::Int32Effect TempEffect
+  {
+    preset Symmetric = true;
+    preset CycleDuration = 10000;
+    preset Enabled = true;
+    preset Value2 = 50;
+    preset Value1 = -50;
+    preset Outlet = ^Temperature;
+  }
+}
+
+$rect <240,240,440,280>
+$output false
+resource Resources::Font TempFont
+{
+  attr fontname FontName = Roboto Black;
+  attr fontheight Height = 48;
+  attr fontheightmode HeightMode = Popular;
+  attr fontquality Quality = High;
+  attr fontranges Ranges = 0x20-0xFF;
+  attr fontaspectratio AspectRatio = 1.0;
+  attr fontbold Bold = true;
+  attr fontitalic Italic = false;
+  attr fontkerning Kerning = true;
+  attr fontrowdistance RowDistance;
+}
